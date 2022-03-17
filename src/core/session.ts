@@ -18,12 +18,14 @@ import { Visit, VisitOptions } from "./drive/visit"
 import { PageSnapshot } from "./drive/page_snapshot"
 import { FrameElement } from "../elements/frame_element"
 import { FetchResponse } from "../http/fetch_response"
+import { Preloader, PreloaderDelegate } from "./drive/preloader"
 
 export type TimingData = {}
 
-export class Session implements FormSubmitObserverDelegate, HistoryDelegate, LinkClickObserverDelegate, NavigatorDelegate, PageObserverDelegate, PageViewDelegate {
+export class Session implements FormSubmitObserverDelegate, HistoryDelegate, LinkClickObserverDelegate, NavigatorDelegate, PageObserverDelegate, PageViewDelegate, PreloaderDelegate {
   readonly navigator = new Navigator(this)
   readonly history = new History(this)
+  readonly preloader = new Preloader(this, document.body)
   readonly view = new PageView(this, document.documentElement)
   adapter: Adapter = new BrowserAdapter(this)
 
@@ -51,6 +53,7 @@ export class Session implements FormSubmitObserverDelegate, HistoryDelegate, Lin
       this.streamObserver.start()
       this.frameRedirector.start()
       this.history.start()
+      this.preloader.start()
       this.started = true
       this.enabled = true
     }
@@ -108,6 +111,10 @@ export class Session implements FormSubmitObserverDelegate, HistoryDelegate, Lin
 
   get restorationIdentifier() {
     return this.history.restorationIdentifier
+  }
+
+  preloadLinksForFrame(frame: FrameElement) {
+
   }
 
   // History delegate
@@ -255,6 +262,10 @@ export class Session implements FormSubmitObserverDelegate, HistoryDelegate, Lin
   }
 
   // Frame element
+
+  preloadLinksForFrame(frame: FrameElement) {
+    this.preloader.preloadOnLoadLinksForView(frame)
+  }
 
   frameLoaded(frame: FrameElement) {
     this.notifyApplicationAfterFrameLoad(frame)
