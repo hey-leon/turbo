@@ -53,6 +53,7 @@ export class Session implements FormSubmitObserverDelegate, HistoryDelegate, Lin
       this.streamObserver.start()
       this.frameRedirector.start()
       this.history.start()
+      this.preloader.start()
       this.started = true
       this.enabled = true
     }
