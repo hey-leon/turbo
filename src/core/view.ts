@@ -5,6 +5,7 @@ import { getAnchor } from "./url"
 
 export interface ViewDelegate<S extends Snapshot> {
   allowsImmediateRender(snapshot: S, resume: (value: any) => void): boolean
+  preloadOnLoadLinksForView(element: Element): void
   viewRenderedSnapshot(snapshot: S, isPreview: boolean): void
   viewInvalidated(): void
 }
@@ -83,6 +84,7 @@ export abstract class View<E extends Element, S extends Snapshot<E> = Snapshot<E
 
         await this.renderSnapshot(renderer)
         this.delegate.viewRenderedSnapshot(snapshot, isPreview)
+        this.delegate.preloadOnLoadLinksForView(this.element)
         this.finishRenderingSnapshot(renderer)
       } finally {
         delete this.renderer

@@ -53,7 +53,6 @@ export class Session implements FormSubmitObserverDelegate, HistoryDelegate, Lin
       this.streamObserver.start()
       this.frameRedirector.start()
       this.history.start()
-      this.preloader.start()
       this.started = true
       this.enabled = true
     }
@@ -111,10 +110,6 @@ export class Session implements FormSubmitObserverDelegate, HistoryDelegate, Lin
 
   get restorationIdentifier() {
     return this.history.restorationIdentifier
-  }
-
-  preloadLinksForFrame(frame: FrameElement) {
-
   }
 
   // History delegate
@@ -257,15 +252,15 @@ export class Session implements FormSubmitObserverDelegate, HistoryDelegate, Lin
     this.notifyApplicationAfterRender()
   }
 
+  preloadOnLoadLinksForView(element: Element) {
+    this.preloader.preloadOnLoadLinksForView(element)
+  }
+
   viewInvalidated() {
     this.adapter.pageInvalidated()
   }
 
   // Frame element
-
-  preloadLinksForFrame(frame: FrameElement) {
-    this.preloader.preloadOnLoadLinksForView(frame)
-  }
 
   frameLoaded(frame: FrameElement) {
     this.notifyApplicationAfterFrameLoad(frame)
