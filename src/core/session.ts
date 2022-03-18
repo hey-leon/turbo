@@ -25,7 +25,7 @@ export type TimingData = {}
 export class Session implements FormSubmitObserverDelegate, HistoryDelegate, LinkClickObserverDelegate, NavigatorDelegate, PageObserverDelegate, PageViewDelegate, PreloaderDelegate {
   readonly navigator = new Navigator(this)
   readonly history = new History(this)
-  readonly preloader = new Preloader(this, document.body)
+  readonly preloader = new Preloader(this)
   readonly view = new PageView(this, document.documentElement)
   adapter: Adapter = new BrowserAdapter(this)
 
